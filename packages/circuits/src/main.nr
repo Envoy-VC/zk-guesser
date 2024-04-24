@@ -9,9 +9,14 @@ unconstrained fn get_sqrt(number: Field) -> Field {
     sqrt(number)
 }
 
-fn main(input: Field) {
-    let sqrt = get_sqrt(input);
-    assert(sqrt.pow_32(2) as u64 == input as u64);
+fn main() {
+    let hash = construct_sig([1, 3]);
+    println(hash);
+}
+
+fn construct_sig<N>(message: [u8; N]) -> [u8; 32] {
+    let hash = std::hash::keccak256(message, N);
+    hash
 }
 
 #[test]
