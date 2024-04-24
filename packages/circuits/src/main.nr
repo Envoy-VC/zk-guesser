@@ -1,54 +1,80 @@
 use dep::std;
 mod ecrecover;
-
-#[oracle(getSqrt)]
-unconstrained fn sqrt(number: Field) -> Field {}
+mod coordinates;
 
 #[export]
-unconstrained fn get_sqrt(number: Field) -> Field {
-    sqrt(number)
+unconstrained fn get_distance(c1: coordinates::Coordinate, c2: coordinates::Coordinate) -> u64 {
+    coordinates::distance(c1, c2)
 }
 
-fn main() {
-    let hash = construct_sig([1, 3]);
-    println(hash);
-}
+fn main(
+    guess: coordinates::Coordinate,
+    actual: coordinates::Coordinate,
+    range: [u64; 2],
+    publicKey: ecrecover::PublicKey,
+    signature: [u8; 64],
+    hashed_message: [u8; 32]
+) {
+    let operator = 0x73979880be5A498fC205D4Ad7EB517d9B2e03c9d;
+    assert(publicKey.ecrecover(signature, hashed_message) == operator, "ZKGuesser: Invalid Signature");
 
-fn construct_sig<N>(message: [u8; N]) -> [u8; 32] {
-    let hash = std::hash::keccak256(message, N);
-    hash
+    let distance = get_distance(guess, actual);
+    assert(distance >= range[0], "ZKGuesser: Distance out of range");
+    assert(distance <= range[1], "ZKGuesser: Distance out of range");
 }
 
 #[test]
 fn test_key_to_address() {
     let pub_key_x = [
-        131, 24, 83, 91, 84, 16, 93, 74, 122, 174, 96, 192, 143, 196, 95, 150, 135, 24, 27, 79, 223, 198, 37, 189, 26, 117, 63, 167, 57, 127, 237, 117
+        57, 75, 55, 39, 97, 142, 247, 86,
+        26, 215, 46, 10, 196, 46, 217, 135,
+        26, 114, 151, 135, 65, 26, 58, 81,
+        34, 20, 128, 84, 89, 69, 113, 80
     ];
     let pub_key_y = [
-        53, 71, 241, 28, 168, 105, 102, 70, 242, 243, 172, 176, 142, 49, 1, 106, 250, 194, 62, 99, 12, 93, 17, 245, 159, 97, 254, 245, 123, 13, 42, 165
+        194, 204, 236, 13, 142, 215, 50,
+        113, 123, 172, 198, 209, 211, 249,
+        162, 5, 109, 90, 233, 85, 81,
+        127, 75, 191, 251, 191, 103, 225,
+        206, 206, 211, 50
     ];
 
     let key = ecrecover::PublicKey { pub_x: pub_key_x, pub_y: pub_key_y };
     let addr = key.to_eth_address();
-    assert(addr == 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266);
+    assert(addr == 0x73979880be5A498fC205D4Ad7EB517d9B2e03c9d);
 }
 
 #[test]
 fn test_verifySig() {
     let pub_key_x = [
-        131, 24, 83, 91, 84, 16, 93, 74, 122, 174, 96, 192, 143, 196, 95, 150, 135, 24, 27, 79, 223, 198, 37, 189, 26, 117, 63, 167, 57, 127, 237, 117
+        57, 75, 55, 39, 97, 142, 247, 86,
+        26, 215, 46, 10, 196, 46, 217, 135,
+        26, 114, 151, 135, 65, 26, 58, 81,
+        34, 20, 128, 84, 89, 69, 113, 80
     ];
     let pub_key_y = [
-        53, 71, 241, 28, 168, 105, 102, 70, 242, 243, 172, 176, 142, 49, 1, 106, 250, 194, 62, 99, 12, 93, 17, 245, 159, 97, 254, 245, 123, 13, 42, 165
+        194, 204, 236, 13, 142, 215, 50,
+        113, 123, 172, 198, 209, 211, 249,
+        162, 5, 109, 90, 233, 85, 81,
+        127, 75, 191, 251, 191, 103, 225,
+        206, 206, 211, 50
     ];
 
     let signature = [
-        57, 17, 112, 239, 241, 30, 64, 157, 170, 50, 85, 145, 156, 69, 226, 85, 147, 164, 10, 82, 71, 93, 42, 132, 200, 220, 161, 255, 95, 241, 211, 141, 81, 7, 150, 25, 25, 27, 162, 213, 80, 61, 12, 170, 50, 4, 154, 203, 252, 229, 119, 29, 202, 153, 50, 25, 126, 145, 245, 23, 136, 75, 29, 177
+        191, 21, 84, 47, 7, 134, 56, 201, 195, 27, 124,
+        255, 117, 104, 176, 211, 125, 65, 43, 101, 47, 5,
+        74, 223, 246, 18, 164, 19, 22, 15, 148, 97, 17,
+        156, 245, 230, 49, 207, 16, 142, 6, 254, 75, 255,
+        230, 54, 52, 161, 84, 138, 253, 252, 75, 146, 30,
+        193, 63, 156, 134, 225, 7, 52, 210, 76
     ];
     let hashed_message = [
-        13, 82, 120, 60, 76, 186, 215, 235, 175, 126, 185, 67, 252, 100, 143, 82, 130, 165, 32, 112, 68, 47, 193, 141, 141, 209, 109, 219, 47, 203, 175, 102
+        29, 189, 253, 193, 67, 240, 35, 230,
+        34, 55, 70, 114, 37, 234, 124, 228,
+        108, 45, 102, 115, 115, 181, 253, 190,
+        165, 57, 67, 99, 118, 95, 55, 104
     ];
 
     let key = ecrecover::PublicKey { pub_x: pub_key_x, pub_y: pub_key_y };
-    assert(key.ecrecover(signature, hashed_message) == 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266);
+    assert(key.ecrecover(signature, hashed_message) == 0x73979880be5A498fC205D4Ad7EB517d9B2e03c9d);
 }
