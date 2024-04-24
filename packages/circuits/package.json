@@ -1,0 +1,14 @@
+{
+	"name": "circuits",
+	"version": "1.0.0",
+	"description": "This circuit project contains all the necessary ingredients to upload to Sindri's API and start requesting proofs.",
+	"main": "index.js",
+	"scripts": {
+		"test": "nargo test --oracle-resolver http://localhost:5555",
+		"prove": "nargo prove --oracle-resolver http://localhost:5555",
+		"solidity-codegen": "nargo codegen-verifier"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}

@@ -8,9 +8,9 @@ unconstrained fn get_distance(c1: coordinates::Coordinate, c2: coordinates::Coor
 }
 
 fn main(
+    range: pub [u64; 2],
     guess: coordinates::Coordinate,
     actual: coordinates::Coordinate,
-    range: [u64; 2],
     publicKey: ecrecover::PublicKey,
     signature: [u8; 64],
     hashed_message: [u8; 32]
@@ -67,7 +67,7 @@ fn test_guess() {
         165, 57, 67, 99, 118, 95, 55, 104
     ];
 
-    main(c1, c2, range, publicKey, signature, hashed_message);
+    main(range, c1, c2, publicKey, signature, hashed_message);
 }
 
 #[test]
