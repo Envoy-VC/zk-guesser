@@ -2,25 +2,25 @@
 	"guess": {
 		"latitude": {
 			"negative": false,
-			"integral": 10,
-			"fractional": 0
+			"integral": 52,
+			"fractional": 52
 		},
 		"longitude": {
-			"negative": true,
-			"integral": 10,
-			"fractional": 0
+			"negative": false,
+			"integral": 13,
+			"fractional": 4050
 		}
 	},
 	"actual": {
 		"latitude": {
 			"negative": false,
-			"integral": 10,
-			"fractional": 0
+			"integral": 51,
+			"fractional": 5047
 		},
 		"longitude": {
-			"negative": false,
-			"integral": 10,
-			"fractional": 0
+			"negative": true,
+			"integral": 0,
+			"fractional": 1278
 		}
 	},
 	"range": [1, 4],

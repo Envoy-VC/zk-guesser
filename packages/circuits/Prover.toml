@@ -1,4 +1,4 @@
-range = [1, 4]
+range = [1, 1000]
 signature = [
   34,
   180,
@@ -102,23 +102,23 @@ hashed_message = [
 
 [guess.latitude]
 negative = false
-integral = 10
-fractional = 0
+integral = 52
+fractional = 52
 
 [guess.longitude]
-negative = true
-integral = 10
-fractional = 0
+negative = false
+integral = 13
+fractional = 4_050
 
 [actual.latitude]
 negative = false
-integral = 10
-fractional = 0
+integral = 51
+fractional = 5_047
 
 [actual.longitude]
-negative = false
-integral = 10
-fractional = 0
+negative = true
+integral = 0
+fractional = 1_278
 
 [publicKey]
 pub_x = [

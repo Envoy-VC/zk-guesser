@@ -1,7 +1,9 @@
 [package]
 name = "zk_guesser"
 type = "bin"
-authors = [""]
+authors = ["Vedant Chainani"]
+description = "ZK Geo Guesser Game where distance between guess and actual location is verified via zk-Proofs"
+license = "MIT"
 compiler_version = "0.27.0"
 
 [dependencies]
