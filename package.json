@@ -1,21 +1,19 @@
 {
-  "name": "zk-guesser",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier . --write --cache"
-  },
-  "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.14",
-    "turbo": "latest"
-  },
-  "packageManager": "pnpm@8.9.0",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "zk-guesser",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "turbo build",
+		"dev": "turbo dev",
+		"lint": "turbo lint",
+		"format": "prettier . --write --cache"
+	},
+	"devDependencies": {
+		"prettier": "^3.2.5",
+		"turbo": "latest"
+	},
+	"packageManager": "pnpm@8.9.0",
+	"engines": {
+		"node": ">=18"
+	}
 }
