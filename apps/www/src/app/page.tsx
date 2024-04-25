@@ -1,18 +1,11 @@
-'use client';
-
 import React from 'react';
 
-import { useConnect } from 'wagmi';
-import { injected } from 'wagmi/connectors';
+import Buildings from '~/screens/Buildings';
 
 const Home = () => {
-  const c = useConnect();
-
   return (
     <div>
-      <button onClick={() => c.connect({ connector: injected() })}>
-        Connect
-      </button>
+      <Buildings />
     </div>
   );
 };
