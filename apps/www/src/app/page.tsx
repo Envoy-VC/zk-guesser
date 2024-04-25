@@ -2,31 +2,14 @@
 
 import React from 'react';
 
-import { usePathname } from 'next/navigation';
+import { useGameMenu } from '~/lib/stores';
 
-import { cn } from '~/lib/utils';
-
+import { GameMenu, HomeNavigation } from '~/components';
 import Buildings from '~/screens/Buildings';
 
-const navItems = [
-  {
-    label: 'Play',
-    link: '/',
-  },
-  {
-    label: 'Create Game',
-    link: '/create-game',
-  },
-  {
-    label: 'Settings',
-    link: '/settings',
-  },
-] as const;
-
 const Home = () => {
-  const pathName = usePathname();
-  const [hovered, setHovered] =
-    React.useState<(typeof navItems)[number]['link']>('/');
+  const { isOpen } = useGameMenu();
+
   return (
     <div className='relative h-screen overflow-hidden'>
       <div className='absolute top-0 h-full w-full'>
@@ -36,21 +19,8 @@ const Home = () => {
         <div className='font-pricedown text-[3.2rem] md:text-[5rem] '>
           MAPPING OUT ZK
         </div>
-        <div className='flex w-fit flex-col py-6 font-pricedown text-5xl text-neutral-400'>
-          {navItems.map((ele) => {
-            return (
-              <div
-                className={cn(
-                  'cursor-pointer py-2 transition-all duration-200 ease-in-out hover:text-6xl hover:text-white',
-                  hovered === ele.link && 'text-6xl text-white'
-                )}
-                onMouseEnter={() => setHovered(ele.link)}
-                onMouseLeave={() => setHovered('/')}
-              >
-                {ele.label}
-              </div>
-            );
-          })}
+        <div className='relative min-w-[80vw]'>
+          {isOpen ? <GameMenu /> : <HomeNavigation />}
         </div>
       </div>
     </div>

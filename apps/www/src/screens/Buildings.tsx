@@ -53,9 +53,9 @@ const DEFAULT_THEME: Theme = {
 };
 
 const INITIAL_VIEW_STATE: MapViewState = {
-  longitude: -74.005,
+  longitude: -74.01,
   latitude: 40.71,
-  zoom: 14.25,
+  zoom: 14.5,
   pitch: 45,
   bearing: 0,
 };
