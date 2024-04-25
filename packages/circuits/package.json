@@ -4,7 +4,7 @@
 	"description": "This circuit project contains all the necessary ingredients to upload to Sindri's API and start requesting proofs.",
 	"main": "index.js",
 	"scripts": {
-		"test": "nargo test --oracle-resolver http://localhost:5555",
+		"test": "nargo test --oracle-resolver http://localhost:5555 --show-output",
 		"prove": "nargo prove --oracle-resolver http://localhost:5555",
 		"solidity-codegen": "nargo codegen-verifier"
 	},
