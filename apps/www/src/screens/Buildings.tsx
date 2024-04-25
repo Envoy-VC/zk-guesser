@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client';
 import { Map } from 'react-map-gl/maplibre';
 
 import { AmbientLight, LightingEffect, PointLight } from '@deck.gl/core';
@@ -54,9 +53,9 @@ const DEFAULT_THEME: Theme = {
 };
 
 const INITIAL_VIEW_STATE: MapViewState = {
-  longitude: -74,
-  latitude: 40.72,
-  zoom: 13,
+  longitude: -74.005,
+  latitude: 40.71,
+  zoom: 14.25,
   pitch: 45,
   bearing: 0,
 };
@@ -157,7 +156,7 @@ const Buildings = ({
       initialViewState={initialViewState}
       controller={true}
     >
-      <Map reuseMaps mapStyle={mapStyle} />
+      <Map reuseMaps mapStyle={mapStyle} interactive />
     </DeckGL>
   );
 };
