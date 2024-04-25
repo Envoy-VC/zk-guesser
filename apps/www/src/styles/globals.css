@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Pricedown';
+  src: url('../../public/fonts/pricedown.otf');
+}
+
 @layer base {
   :root {
     --background: hsl(0 0% 100%);
