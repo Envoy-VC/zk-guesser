@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import "../interfaces/IZKGuesser.sol";
 
@@ -9,12 +8,13 @@ library GameLib {
     uint8 public constant MAX_PLAYERS = 8;
     uint8 public constant MAX_ROUNDS = 8;
     uint8 public constant TIME_PER_ROUND = 3 minutes;
+    uint256 public constant BASE_REWARD = 0.01 ether;
+    uint256 public constant TIME_MULTIPLIER = 0.00005 ether;
+
     bytes32 public constant ONE = bytes32(0x0000000000000000000000000000000000000000000000000000000000000001);
     bytes32 public constant THOUSAND = bytes32(0x00000000000000000000000000000000000000000000000000000000000003e8);
     bytes32 public constant FIVE_THOUSAND = bytes32(0x0000000000000000000000000000000000000000000000000000000000001388);
     bytes32 public constant TEN_THOUSAND = bytes32(0x0000000000000000000000000000000000000000000000000000000000002710);
-
-    using ECDSA for bytes32;
 
     function playerExists(Game memory _game, address _player) internal pure returns (uint8) {
         for (uint8 i = 0; i < _game.totalPlayers; i++) {

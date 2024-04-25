@@ -3,8 +3,6 @@ pragma solidity ^0.8.13;
 
 import {Test, console2 as console, Vm} from "forge-std/Test.sol";
 import {UltraVerifier} from "../src/prover/plonk_vk.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 
 import {ZKGuesser} from "../src/ZKGuesser.sol";
 import {GameLib} from "../src/lib/GameLib.sol";
@@ -38,10 +36,15 @@ contract ZKGuesserTest is Test {
     function test_makeGuess() external {
         vm.startPrank(user.addr);
         uint256 gameId = zkGuesser.createGame();
+
         string memory proof = vm.readLine("../circuits/proofs/zk_guesser.proof");
         bytes memory proofBytes = vm.parseBytes(proof);
 
-        zkGuesser.makeGuess(gameId, proofBytes);
-        zkGuesser.createGame();
+        uint256 score = zkGuesser.makeGuess(gameId, proofBytes);
+        assert(score == 190000000000000000);
+        // 0 min - 190000000000000000
+        // 1 min - 160000000000000000
+        // 2 min - 130000000000000000
+        // 3 min - 100500000000000000
     }
 }

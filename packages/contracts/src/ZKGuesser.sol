@@ -58,12 +58,15 @@ contract ZKGuesser is Ownable, IZKGuesser {
         game.totalPlayers++;
     }
 
-    function makeGuess(uint256 _gameId, bytes calldata _proof) public {
+    function makeGuess(uint256 _gameId, bytes calldata _proof) public returns (uint256) {
         if (_gameId >= _nextGameId) {
             revert GameNotExists(_gameId);
         }
 
         Game storage game = _games[_gameId];
+        if (GameLib.isGameEnded(game)) {
+            revert GameEnded(_gameId);
+        }
         uint8 playerIdx = GameLib.playerExists(game, msg.sender);
 
         if (playerIdx == GameLib.MAX_PLAYERS) {
@@ -77,45 +80,47 @@ contract ZKGuesser is Ownable, IZKGuesser {
 
         _currentRound[_gameId][playerIdx] = currentRound + 1;
 
-        uint256 score = getScore(msg.sender, _gameId, currentRound, _proof);
+        uint256 score = getScore(msg.sender, game, currentRound, _proof);
         _scores[_gameId][playerIdx] += score;
+        return score;
     }
 
-    function getScore(address player, uint256 _gameId, uint8 currentRound, bytes calldata _proof)
+    function getScore(address player, Game memory game, uint8 currentRound, bytes calldata _proof)
         internal
         view
         returns (uint256)
     {
         bytes32[] memory _publicInputs = new bytes32[](35);
-        bytes32[32] memory messageHash = GameLib.createHashMessage(player, _gameId, currentRound);
+        bytes32[32] memory messageHash = GameLib.createHashMessage(player, game.id, currentRound);
 
         _publicInputs[2] = GameLib.padAddress(owner());
         for (uint256 i = 0; i < 32; i++) {
             _publicInputs[i + 3] = messageHash[i];
         }
 
-        // TRY with range (0,1000)
+        uint256 score = 0;
+        uint256 _timeLeft = uint256(GameLib.TIME_PER_ROUND)
+            - (block.timestamp - game.startTime - (uint256(currentRound) * uint256(GameLib.TIME_PER_ROUND)));
+
         _publicInputs[0] = GameLib.ONE;
         _publicInputs[1] = GameLib.THOUSAND;
 
         try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) return 10;
+            if (result) score = 10;
         } catch {}
 
-        // // TRY with range (1000,5000)
-        // _publicInputs[0] = GameLib.THOUSAND;
-        // _publicInputs[1] = GameLib.FIVE_THOUSAND;
-        // try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-        //     if (result) return 5;
-        // } catch {}
+        _publicInputs[0] = GameLib.THOUSAND;
+        _publicInputs[1] = GameLib.FIVE_THOUSAND;
+        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
+            if (result) score = 5;
+        } catch {}
 
-        // // TRY with range (5000,10000)
-        // _publicInputs[0] = GameLib.FIVE_THOUSAND;
-        // _publicInputs[1] = GameLib.TEN_THOUSAND;
-        // try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-        //     if (result) return 1;
-        // } catch {}
+        _publicInputs[0] = GameLib.FIVE_THOUSAND;
+        _publicInputs[1] = GameLib.TEN_THOUSAND;
+        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
+            if (result) score = 1;
+        } catch {}
 
-        return 0;
+        return score * ((GameLib.BASE_REWARD) + (_timeLeft * GameLib.TIME_MULTIPLIER));
     }
 }
