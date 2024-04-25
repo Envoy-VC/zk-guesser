@@ -1,5 +1,10 @@
 import { Inter } from 'next/font/google';
+import { headers } from 'next/headers';
 
+import { config } from '~/lib/viem';
+
+import { cookieToInitialState } from 'wagmi';
+import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 
 const inter = Inter({
@@ -18,9 +23,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const initialState = cookieToInitialState(config, headers().get('cookie'));
+
   return (
     <html lang='en'>
-      <body className={`font-sans ${inter.variable}`}>{children}</body>
+      <Web3Provider initialState={initialState}>
+        <body className={`font-sans ${inter.variable}`}>{children}</body>
+      </Web3Provider>
     </html>
   );
 }
