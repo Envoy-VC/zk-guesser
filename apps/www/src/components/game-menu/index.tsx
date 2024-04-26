@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 
+import { useNoir } from '~/lib/hooks';
 import { useGameMenu } from '~/lib/stores/game-menu';
 import { navItems } from '~/lib/stores/game-menu';
 import { cn } from '~/lib/utils';
@@ -7,13 +10,15 @@ import { cn } from '~/lib/utils';
 import { motion } from 'framer-motion';
 
 import ConnectButton from '../connect-button';
+import { Button } from '../ui/button';
 
 const GameMenu = () => {
+  const { generateProof } = useNoir();
   const { activeItem, setActiveItem } = useGameMenu();
   return (
-    <div className='flex flex-col gap-3 w-full min-w-[80dvw]'>
-      <div className='flex flex-col items-start justify-between md:flex-row w-full'>
-        <div className='flex flex-row items-end gap-1 w-full max-w-xl'>
+    <div className='flex w-full min-w-[80dvw] flex-col gap-3'>
+      <div className='flex w-full flex-col items-start justify-between md:flex-row'>
+        <div className='flex w-full max-w-xl flex-row items-end gap-1'>
           {navItems.map((ele) => {
             return (
               <div
@@ -46,7 +51,15 @@ const GameMenu = () => {
         <ConnectButton />
       </div>
       <div className='my-4 w-full max-w-screen-2xl rounded-md border border-neutral-500 bg-neutral-600/20 p-12 backdrop-blur-sm'>
-        GameMenu
+        <Button
+          variant='secondary'
+          onClick={async () => {
+            const res = await generateProof();
+            console.log(res);
+          }}
+        >
+          Generate Proof
+        </Button>
       </div>
     </div>
   );

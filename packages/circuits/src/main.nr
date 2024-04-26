@@ -17,7 +17,6 @@ fn main(
     actual: coordinates::Coordinate
 ) {
     let recovered = publicKey.ecrecover(signature, hashed_message);
-    println(recovered);
     assert(recovered == operator, "ZKGuesser: Invalid Signature");
 
     let distance = get_distance(guess, actual);
