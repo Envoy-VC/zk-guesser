@@ -1,15 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import { Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet';
 
-import { Icon, LatLng } from 'leaflet';
+import { Icon } from 'leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import MarkerIcon from 'leaflet/dist/images/marker-icon.png';
 import MarkerShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
-
-import { Button } from '../ui/button';
 
 const MiniMap = () => {
   const map = useMap();
@@ -22,7 +20,7 @@ const MiniMap = () => {
     setMarkerPos([e.latlng.lat, e.latlng.lng]);
   };
 
-  map.on('click', onClick);
+  useMapEvent('click', onClick);
 
   return (
     <>
