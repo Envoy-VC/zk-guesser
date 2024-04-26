@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import { headers } from 'next/headers';
 
 import { config } from '~/lib/viem';
@@ -7,8 +7,8 @@ import { cookieToInitialState } from 'wagmi';
 import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 
-const inter = Inter({
-  subsets: ['latin'],
+const chaletFont = localFont({
+  src: '../../public/fonts/chalet.ttf',
   variable: '--font-sans',
 });
 
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <Web3Provider initialState={initialState}>
-        <body className={`font-sans ${inter.variable}`}>{children}</body>
+        <body className={`font-sans ${chaletFont.variable}`}>{children}</body>
       </Web3Provider>
     </html>
   );

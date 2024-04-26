@@ -19,7 +19,7 @@ const Home = () => {
         <div className='font-pricedown text-[3.2rem] md:text-[5rem] '>
           MAPPING OUT ZK
         </div>
-        <div className='relative min-w-[80vw]'>
+        <div className='relative min-w-[80vw] w-full'>
           {isOpen ? <GameMenu /> : <HomeNavigation />}
         </div>
       </div>
