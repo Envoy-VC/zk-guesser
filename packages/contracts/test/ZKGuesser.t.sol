@@ -36,15 +36,16 @@ contract ZKGuesserTest is Test {
     function test_makeGuess() external {
         vm.startPrank(user.addr);
         uint256 gameId = zkGuesser.createGame();
+        vm.warp(block.timestamp);
 
         string memory proof = vm.readLine("../circuits/proofs/zk_guesser.proof");
         bytes memory proofBytes = vm.parseBytes(proof);
 
         uint256 score = zkGuesser.makeGuess(gameId, proofBytes);
-        assert(score == 190000000000000000);
-        // 0 min - 190000000000000000
-        // 1 min - 160000000000000000
-        // 2 min - 130000000000000000
-        // 3 min - 100500000000000000
+        assert(score == 2800000000);
+        // 0 min - 2800000000
+        // 1 min - 2200000000
+        // 2 min - 1600000000
+        // 3 min - 1010000000
     }
 }

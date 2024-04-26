@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { noirCircuit } from '~/lib/circuit';
 
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';

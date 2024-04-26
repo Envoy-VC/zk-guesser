@@ -14,7 +14,8 @@ contract ZKGuesser is Ownable, IZKGuesser {
     mapping(uint256 => Game) public _games;
     // Game => Player Index => Score
     mapping(uint256 => mapping(uint8 => uint256)) public _scores;
-    // Game => Player Index => Current Round
+    // Player => Total Score
+    mapping(address => uint256) public _totalScores;
     mapping(uint256 => mapping(uint8 => uint256)) public _currentRound;
 
     constructor(address verifier_, address initialOwner_) Ownable(initialOwner_) {
@@ -82,6 +83,7 @@ contract ZKGuesser is Ownable, IZKGuesser {
 
         uint256 score = getScore(msg.sender, game, currentRound, _proof);
         _scores[_gameId][playerIdx] += score;
+        _totalScores[msg.sender] += score;
         return score;
     }
 
@@ -118,9 +120,16 @@ contract ZKGuesser is Ownable, IZKGuesser {
         _publicInputs[0] = GameLib.FIVE_THOUSAND;
         _publicInputs[1] = GameLib.TEN_THOUSAND;
         try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 1;
+            if (result) score = 2;
         } catch {}
 
-        return score * ((GameLib.BASE_REWARD) + (_timeLeft * GameLib.TIME_MULTIPLIER));
+        return (score * ((GameLib.BASE_REWARD) + (_timeLeft * GameLib.TIME_MULTIPLIER)) * (10 ** GameLib.DECIMALS));
+    }
+
+    function getSigningMessage(address _player, uint256 _gameId) public view returns (bytes32) {
+        Game storage game = _games[_gameId];
+        uint8 currentRound = GameLib.getCurrentRound(game);
+        bytes32 message = keccak256(abi.encodePacked(_player, _gameId, currentRound));
+        return message;
     }
 }

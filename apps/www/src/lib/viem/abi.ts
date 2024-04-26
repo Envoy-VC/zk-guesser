@@ -48,6 +48,13 @@ export const ZK_GUESSER_ABI = [
   },
   {
     type: 'function',
+    name: '_totalScores',
+    inputs: [{ name: '', type: 'address', internalType: 'address' }],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: '_verifier',
     inputs: [],
     outputs: [
@@ -61,6 +68,16 @@ export const ZK_GUESSER_ABI = [
     inputs: [],
     outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
     stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'getSigningMessage',
+    inputs: [
+      { name: '_player', type: 'address', internalType: 'address' },
+      { name: '_gameId', type: 'uint256', internalType: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'bytes32', internalType: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
     type: 'function',
