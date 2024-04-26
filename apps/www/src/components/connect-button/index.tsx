@@ -54,24 +54,24 @@ const ConnectButton = () => {
   return (
     <div>
       {!isConnected && (
-        <Button variant='secondary' onClick={onConnect}>
+        <Button variant='secondary' onClick={onConnect} className='mt-4 sm:mt-0'>
           {isConnecting ? 'Connecting...' : 'Connect Wallet'}
         </Button>
       )}
       {isConnected && (
-        <div className='flex flex-row items-start gap-3'>
-          <div className='flex flex-col text-lg font-medium items-end uppercase'>
+        <div className='flex items-center sm:items-start gap-3 sm:flex-row flex-row-reverse pt-4 sm:pt-0'>
+          <div className='flex flex-col items-start sm:items-end text-sm sm:text-lg font-medium uppercase'>
             {ensNameLoading && !ensName ? (
               <Skeleton className='mt-1 h-[20px] w-[200px] rounded-md' />
             ) : (
               <div>{ensName}</div>
             )}
-            <div>{getDay()}</div>
-            <div>$324</div>
+            <div className='hidden sm:flex'>{getDay()}</div>
+            <div className=''>$324</div>
           </div>
-          <div className='aspect-square w-24'>
+          <div className='aspect-square w-12 sm:w-24'>
             {isFetched && ensAvatar && (
-              <div className=' rounded-xl bg-white/50 p-[3px]'>
+              <div className='rounded-sm sm:rounded-xl bg-white/50 p-[3px]'>
                 <img
                   src={ensAvatar}
                   className='h-full w-full rounded-lg object-cover'
