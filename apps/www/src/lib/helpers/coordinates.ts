@@ -5,6 +5,7 @@ import {
 } from '@noir-lang/noir_js';
 
 import '~/types/noir';
+import { Coordinate } from '~/types/noir';
 
 export const foreignCallHandler: ForeignCallHandler = async (
   name: string,
@@ -55,3 +56,31 @@ export const calculateDistance = (
 function deg2rad(deg: number): number {
   return deg * (Math.PI / 180);
 }
+
+export const serializeCoordinates = (
+  coordinates: [number, number]
+): Coordinate => {
+  const [lat, lon] = coordinates;
+  const latSign = lat < 0;
+  const lonSign = lon < 0;
+  const latIntegral = Math.abs(Math.floor(lat));
+  const lonIntegral = Math.abs(Math.floor(lon));
+  const latDecimals = String(lat).split('.')[1]?.length || 0;
+  const lonDecimals = String(lon).split('.')[1]?.length || 0;
+
+  const latFractional = parseInt(String(lat).split('.')[1] ?? '0');
+  const lonFractional = parseInt(String(lon).split('.')[1] ?? '0');
+
+  return {
+    latitude: {
+      negative: latSign,
+      integral: latIntegral,
+      fractional: latFractional,
+    },
+    longitude: {
+      negative: lonSign,
+      integral: lonIntegral,
+      fractional: lonFractional,
+    },
+  };
+};
