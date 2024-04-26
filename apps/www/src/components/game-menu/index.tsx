@@ -2,9 +2,6 @@
 
 import React from 'react';
 
-import { getGameLocations } from '~/lib/helpers/generateCoordinates';
-
-import { useNoir } from '~/lib/hooks';
 import { useGameMenu } from '~/lib/stores/game-menu';
 import { navItems } from '~/lib/stores/game-menu';
 import { cn } from '~/lib/utils';
@@ -15,7 +12,6 @@ import ConnectButton from '../connect-button';
 import { Button } from '../ui/button';
 
 const GameMenu = () => {
-  const { generateProof } = useNoir();
   const { activeItem, setActiveItem } = useGameMenu();
   return (
     <div className='flex w-full min-w-[80dvw] flex-col gap-3'>
@@ -54,23 +50,7 @@ const GameMenu = () => {
         <ConnectButton />
       </div>
       <div className='my-4 w-full max-w-screen-2xl rounded-md border border-neutral-500 bg-neutral-600/20 p-12 backdrop-blur-sm'>
-        <Button
-          variant='secondary'
-          onClick={async () => {
-            // const res = await generateProof(
-            //   BigInt(0),
-            //   0,
-            //   [20.40854, 72.47458],
-            //   [42.38824, -172.39634]
-            // );
-            // console.log(res);
-
-            const res = getGameLocations();
-            console.log(res);
-          }}
-        >
-          Generate Proof
-        </Button>
+        <Button variant='secondary'>Generate Proof</Button>
       </div>
     </div>
   );
