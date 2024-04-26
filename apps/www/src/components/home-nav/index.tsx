@@ -15,6 +15,7 @@ const HomeNavigation = () => {
       {navItems.map((ele) => {
         return (
           <div
+            key={ele.key}
             className={cn(
               'cursor-pointer py-2 transition-all duration-200 ease-in-out hover:text-5xl hover:text-white sm:hover:text-6xl',
               hovered === ele.key && 'text-5xl text-white sm:text-6xl'

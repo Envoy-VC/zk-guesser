@@ -1,26 +1,28 @@
+import {
+  calculateDistance,
+  foreignCallHandler,
+  serializeCoordinates,
+} from '~/lib/helpers/coordinates';
+
 import { noirCircuit } from '~/lib/circuit';
 
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import { Noir } from '@noir-lang/noir_js';
-import { toHex } from 'viem';
-import { useAccount } from 'wagmi';
-import { readContract } from 'wagmi/actions';
+import { encodePacked, keccak256, toHex } from 'viem';
+import { useAccount, useWriteContract } from 'wagmi';
 
-import {
-  calculateDistance,
-  serializeCoordinates,
-} from '../helpers/coordinates';
-import { foreignCallHandler } from '../helpers/coordinates';
-import { config, getSignedMessage, zkGuesserContract } from '../viem';
+import { getSignedMessage, zkGuesserContract } from '../viem';
 
 import { ZKGuesserInputs } from '~/types/noir';
 
 const useNoir = () => {
   const { address } = useAccount();
-  const OPERATOR = '0x0009D5d42d946c42E8138D7EfE483118dbCA414B';
+  const { writeContractAsync } = useWriteContract();
+  const OPERATOR = '0xe269688F24e1C7487f649fC3dCD99A4Bf15bDaA1';
 
   const generateProof = async (
     gameId: bigint,
+    currentRound: number,
     _actual: [number, number],
     _guess: [number, number]
   ) => {
@@ -46,23 +48,22 @@ const useNoir = () => {
       }
 
       if (!address) throw new Error('Please connect your wallet.');
-      const backend = new BarretenbergBackend(noirCircuit);
+      const backend = new BarretenbergBackend(noirCircuit, { threads: 10 });
       const noir = new Noir(noirCircuit, backend);
 
-      // @ts-expect-error err
-      const message = await readContract(config, {
-        ...zkGuesserContract,
-        chainId: 534351,
-        functionName: 'getSigningMessage',
-        args: [address, gameId],
-      });
+      const message = keccak256(
+        encodePacked(
+          ['address', 'uint256', 'uint8'],
+          [address, gameId, currentRound]
+        )
+      );
 
       const { hashed_message, signature, pub_x, pub_y } =
         await getSignedMessage(message);
 
       const inputs: ZKGuesserInputs = {
         range,
-        operator: '0x0009D5d42d946c42E8138D7EfE483118dbCA414B',
+        operator: OPERATOR,
         hashed_message,
         signature,
         publicKey: {
@@ -74,9 +75,22 @@ const useNoir = () => {
       };
 
       const proof = await noir.generateProof(inputs, foreignCallHandler);
-      console.log(toHex(proof.proof));
-      return proof;
-    } catch (error) {}
+      const hexProof = toHex(proof.proof);
+
+      // // @ts-expect-error err
+      // const res = await writeContractAsync({
+      //   ...zkGuesserContract,
+      //   functionName: 'makeGuess',
+      //   args: [gameId, hexProof],
+      // });
+      return {
+        hash: '',
+        proof: hexProof,
+        distance: distance,
+      };
+    } catch (error) {
+      console.log(error);
+    }
   };
   return { generateProof };
 };

@@ -36,7 +36,7 @@ declare module 'wagmi' {
 }
 
 const account = privateKeyToAccount(
-  '0xf03e0d12c515d029737a1667a0aa032ede7b750f512475c8564aa04e0d7b4797'
+  env.NEXT_PUBLIC_OPERATOR_PRIVATE_KEY as `0x${string}`
 );
 
 const walletClient = createWalletClient({

@@ -54,24 +54,28 @@ const ConnectButton = () => {
   return (
     <div>
       {!isConnected && (
-        <Button variant='secondary' onClick={onConnect} className='mt-4 sm:mt-0'>
+        <Button
+          variant='secondary'
+          onClick={onConnect}
+          className='mt-4 lg:mt-0'
+        >
           {isConnecting ? 'Connecting...' : 'Connect Wallet'}
         </Button>
       )}
       {isConnected && (
-        <div className='flex items-center sm:items-start gap-3 sm:flex-row flex-row-reverse pt-4 sm:pt-0'>
-          <div className='flex flex-col items-start sm:items-end text-sm sm:text-lg font-medium uppercase'>
+        <div className='flex flex-row-reverse items-center gap-3 pt-4 lg:flex-row lg:items-start lg:pt-0'>
+          <div className='flex flex-col items-start text-sm font-medium uppercase lg:items-end lg:text-lg'>
             {ensNameLoading && !ensName ? (
               <Skeleton className='mt-1 h-[20px] w-[200px] rounded-md' />
             ) : (
               <div>{ensName}</div>
             )}
-            <div className='hidden sm:flex'>{getDay()}</div>
+            <div className='hidden lg:flex'>{getDay()}</div>
             <div className=''>$324</div>
           </div>
-          <div className='aspect-square w-12 sm:w-24'>
+          <div className='aspect-square w-12 lg:w-24'>
             {isFetched && ensAvatar && (
-              <div className='rounded-sm sm:rounded-xl bg-white/50 p-[3px]'>
+              <div className='rounded-sm bg-white/50 p-[3px] lg:rounded-xl'>
                 <img
                   src={ensAvatar}
                   className='h-full w-full rounded-lg object-cover'

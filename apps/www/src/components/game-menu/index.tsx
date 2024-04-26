@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { getGameLocations } from '~/lib/helpers/generateCoordinates';
+
 import { useNoir } from '~/lib/hooks';
 import { useGameMenu } from '~/lib/stores/game-menu';
 import { navItems } from '~/lib/stores/game-menu';
@@ -17,11 +19,12 @@ const GameMenu = () => {
   const { activeItem, setActiveItem } = useGameMenu();
   return (
     <div className='flex w-full min-w-[80dvw] flex-col gap-3'>
-      <div className='flex w-full flex-col items-start justify-between md:flex-row'>
+      <div className='flex w-full flex-col items-start justify-between lg:flex-row'>
         <div className='flex w-full max-w-xl flex-row items-end gap-1'>
           {navItems.map((ele) => {
             return (
               <div
+                key={ele.key}
                 onClick={() => setActiveItem(ele.key)}
                 className='relative flex w-full cursor-pointer'
               >
@@ -54,7 +57,15 @@ const GameMenu = () => {
         <Button
           variant='secondary'
           onClick={async () => {
-            const res = await generateProof();
+            // const res = await generateProof(
+            //   BigInt(0),
+            //   0,
+            //   [20.40854, 72.47458],
+            //   [42.38824, -172.39634]
+            // );
+            // console.log(res);
+
+            const res = getGameLocations();
             console.log(res);
           }}
         >
