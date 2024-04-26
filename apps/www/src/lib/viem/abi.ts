@@ -81,6 +81,16 @@ export const ZK_GUESSER_ABI = [
   },
   {
     type: 'function',
+    name: 'isPlayer',
+    inputs: [
+      { name: '_player', type: 'address', internalType: 'address' },
+      { name: '_gameId', type: 'uint256', internalType: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'joinGame',
     inputs: [{ name: '_gameId', type: 'uint256', internalType: 'uint256' }],
     outputs: [],

@@ -132,4 +132,9 @@ contract ZKGuesser is Ownable, IZKGuesser {
         bytes32 message = keccak256(abi.encodePacked(_player, _gameId, currentRound));
         return message;
     }
+
+    function isPlayer(address _player, uint256 _gameId) public view returns (bool) {
+        Game storage game = _games[_gameId];
+        return GameLib.playerExists(game, _player) < GameLib.MAX_PLAYERS;
+    }
 }
