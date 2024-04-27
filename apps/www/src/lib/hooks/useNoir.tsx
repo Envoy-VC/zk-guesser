@@ -77,14 +77,14 @@ const useNoir = () => {
       const proof = await noir.generateProof(inputs, foreignCallHandler);
       const hexProof = toHex(proof.proof);
 
-      // // @ts-expect-error err
-      // const res = await writeContractAsync({
-      //   ...zkGuesserContract,
-      //   functionName: 'makeGuess',
-      //   args: [gameId, hexProof],
-      // });
+      const res = await writeContractAsync({
+        ...zkGuesserContract,
+        functionName: 'makeGuess',
+        args: [gameId, hexProof],
+      });
+
       return {
-        hash: '',
+        hash: res,
         proof: hexProof,
         distance: distance,
       };

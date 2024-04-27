@@ -5,6 +5,7 @@ import React from 'react';
 import { zkGuesserContract } from '~/lib/viem';
 
 import { useAccount, useReadContracts } from 'wagmi';
+import { ErrorScreen } from '~/screens';
 
 import GuesserMap from '../guesser-map';
 
@@ -38,30 +39,23 @@ const GameWrapper = ({ children, gameId, locations }: Props) => {
     ],
   });
 
-  //   const startTime = Number(data?.[0]?.result?.[2] ?? BigInt(0));
-  //   // end = start + 24 min
-  //   const endTime = startTime + 40 * 60;
-  //   const gameExists = Number(data?.[2].result ?? BigInt(0)) > Number(gameId);
-  //   const isPlayer = data?.[1].result ?? false;
-  //   const currentRound = Number((endTime - startTime) / 300);
-
   const currentTime = Math.round(Date.now() / 1000);
-  const startTime = Math.round(Date.now() / 1000) - 4;
+  const startTime = Number(data?.[0]?.result?.[2] ?? BigInt(0));
   const endTime = startTime + 40 * 60;
-  const gameExists = true;
-  const isPlayer = true;
-  const currentRound = Math.floor((currentTime - startTime) / 300);
+  const gameExists = Number(data?.[2].result ?? BigInt(0)) > Number(gameId);
+  const isPlayer = data?.[1].result ?? false;
+  const currentRound = Math.round(Number((currentTime - startTime) / 300));
 
   if (!gameExists) {
-    return <div>Game not found</div>;
+    return <ErrorScreen message='Game does not exist' />;
   }
 
   if (endTime < Math.floor(Date.now() / 1000)) {
-    return <div>Game ended</div>;
+    return <ErrorScreen message='Game has ended' />;
   }
 
   if (!isPlayer) {
-    return <div>Not a player</div>;
+    return <ErrorScreen message='You are not a player in this game' />;
   }
 
   return (

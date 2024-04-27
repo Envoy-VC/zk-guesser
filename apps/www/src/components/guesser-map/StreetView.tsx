@@ -17,22 +17,20 @@ interface Props {
 const StreetView = ({ location }: Props) => {
   const viewerRef = useRef<HTMLDivElement>(null);
 
-  // const { data } = useQuery({
-  //   queryKey: ['mapillary-image'],
-  //   staleTime: 1000 * 60 * 60,
-  //   queryFn: async () => {
-  //     const res = await getMapillaryImage(location);
-  //     console.log(res);
-  //     return res[0];
-  //   },
-  // });
+  const { data: image } = useQuery({
+    queryKey: ['mapillary-image', location.x, location.y],
+    staleTime: 1000 * 60 * 60,
+    queryFn: async () => {
+      const res = await getMapillaryImage(location);
+      console.log(res, location);
+      return res;
+    },
+  });
 
   useEffect(() => {
     if (!viewerRef.current) return;
 
-    // if (!data?.id) return;
-
-    // console.log(data.id);
+    if (!image) return;
 
     const container = viewerRef.current;
     container.className = 'relative w-full h-full z-[10]';
@@ -40,7 +38,7 @@ const StreetView = ({ location }: Props) => {
     const options: ViewerOptions = {
       accessToken: env.NEXT_PUBLIC_MAPILLARY_CLIENT_ID,
       container,
-      imageId: '272187734619146',
+      imageId: image,
     };
 
     const viewer = new Viewer(options);
@@ -48,7 +46,7 @@ const StreetView = ({ location }: Props) => {
     return () => {
       viewer.remove();
     };
-  }, []);
+  }, [image]);
 
   return <div ref={viewerRef} className='z-[1000] h-full w-full border'></div>;
 };

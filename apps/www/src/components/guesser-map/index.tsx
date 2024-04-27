@@ -4,13 +4,12 @@ import React from 'react';
 import { MapContainer } from 'react-leaflet';
 import { Rnd as ResizableContainer } from 'react-rnd';
 
-import { useRouter } from 'next/navigation';
-
 import { calculateDistance } from '~/lib/helpers/coordinates';
 import { parseMinutes } from '~/lib/helpers/time';
 
 import { useNoir } from '~/lib/hooks';
 import { useMapStore } from '~/lib/stores';
+import { zkGuesserContract } from '~/lib/viem';
 
 import { LatLng, Map } from 'leaflet';
 import { polyline } from 'leaflet';
@@ -36,7 +35,6 @@ interface Props {
 }
 
 const GuesserMap = ({ location, startTime, gameId }: Props) => {
-  const router = useRouter();
   const { generateProof } = useNoir();
   const { markers, updateMarker } = useMapStore();
   const mapRef = React.useRef<Map>(null);
@@ -59,7 +57,7 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
 
   const onGuess = async () => {
     if (isRoundOver) {
-      router.refresh();
+      window.location.reload();
       return;
     }
     try {
@@ -70,7 +68,13 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
         [location.x, location.y],
         [markers.guess[0], markers.guess[1]]
       );
-      console.log(proof);
+
+      if (!proof) {
+        throw new Error('Error .');
+      }
+
+      console.log(proof.proof);
+
       addPolyline();
       setIsDialogOpen(true);
       setIsGuessing(false);
