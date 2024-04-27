@@ -6,3 +6,11 @@ libs = ["lib"]
 fs_permissions = [{ access = "read-write", path = "../" }]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+[rpc_endpoints]
+scroll = "https://rpc.scroll.io"
+scroll_sepolia = "https://sepolia-rpc.scroll.io"
+
+[etherscan]
+scroll = { key = "48EQKFV3BTGJN8DRY4E2UNMMYZIITYFSPY", chain = 534352 }
+scroll_sepolia = { key = "${ETHERSCAN_API_KEY}", chain = 534351 }
