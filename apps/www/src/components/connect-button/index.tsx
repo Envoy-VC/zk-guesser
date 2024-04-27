@@ -15,6 +15,10 @@ import {
 import { Button } from '~/components/ui/button';
 import { Skeleton } from '~/components/ui/skeleton';
 
+const parseAddress = (address: string) => {
+  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+};
+
 const ConnectButton = () => {
   const { address, isConnected, isConnecting } = useAccount();
   const { connectors, connectAsync } = useConnect();
@@ -75,22 +79,24 @@ const ConnectButton = () => {
       {isConnected && (
         <div className='flex flex-row-reverse items-center gap-3 pt-4 lg:flex-row lg:items-start lg:pt-0'>
           <div className='flex flex-col items-start text-sm font-medium uppercase lg:items-end lg:text-lg'>
-            {ensNameLoading && !ensName ? (
+            {ensNameLoading ? (
               <Skeleton className='mt-1 h-[20px] w-[200px] rounded-md' />
             ) : (
-              <div>{ensName}</div>
+              <div>{ensName ?? parseAddress(address ?? '')}</div>
             )}
             <div className='hidden lg:flex'>{getDay()}</div>
             <div className=''>${Math.round(Number(balance ?? 0) / 10e6)}</div>
           </div>
           <div className='aspect-square w-12 lg:w-24'>
-            {(ensAvatarLoading || !ensAvatar) && (
+            {ensAvatarLoading ? (
               <Skeleton className='h-full w-full rounded-lg' />
-            )}
-            {ensAvatar && (
+            ) : (
               <div className='rounded-sm bg-white/50 p-[3px] lg:rounded-xl'>
                 <img
-                  src={ensAvatar ?? ''}
+                  src={
+                    ensAvatar ??
+                    `https://api.dicebear.com/8.x/shapes/svg?seed=${address}`
+                  }
                   className='h-full w-full rounded-lg object-cover'
                 />
               </div>
