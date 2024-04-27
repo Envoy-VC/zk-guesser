@@ -7,7 +7,7 @@ import "../interfaces/IZKGuesser.sol";
 library GameLib {
     uint8 public constant MAX_PLAYERS = 8;
     uint8 public constant MAX_ROUNDS = 8;
-    uint8 public constant TIME_PER_ROUND = 3 minutes;
+    uint16 public constant TIME_PER_ROUND = 5 minutes;
     uint256 public constant BASE_REWARD = 100;
     uint256 public constant TIME_MULTIPLIER = 1;
 

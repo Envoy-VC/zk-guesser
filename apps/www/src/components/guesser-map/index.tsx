@@ -83,8 +83,8 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
     const interval = setInterval(() => {
       const now = Math.round(Date.now() / 1000);
       const timeElapsed = now - startTime;
-      const round = Math.floor(timeElapsed / 180);
-      const timeUntilNextRound = 180 - (timeElapsed % 180);
+      const round = Math.floor(timeElapsed / 300);
+      const timeUntilNextRound = 300 - (timeElapsed % 300);
       setCurrentRound(round);
       setTimeUntilNextRound(timeUntilNextRound);
       if (timeUntilNextRound === 1) {

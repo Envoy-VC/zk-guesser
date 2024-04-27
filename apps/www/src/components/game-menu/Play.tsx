@@ -40,8 +40,8 @@ const Play = () => {
     if (Number(totalPlayers) === 0) {
       throw new Error('Game not found');
     }
-
-    if (Number(startAt) + 24 * 60 < Math.round(Date.now() / 1000)) {
+    const FIVE_MINUTES = 5 * 60;
+    if (Number(startAt) + 8 * FIVE_MINUTES < Math.round(Date.now() / 1000)) {
       throw new Error('Game Ended');
     }
 
@@ -108,9 +108,7 @@ const Play = () => {
             value={id2}
             onChange={(e) => setId2(e.target.value)}
           />
-          <Button onClick={onGoToGame}>
-            {isJoining ? 'Joining...' : 'Join'}
-          </Button>
+          <Button onClick={onGoToGame}>Go</Button>
         </div>
       </div>
     </div>
