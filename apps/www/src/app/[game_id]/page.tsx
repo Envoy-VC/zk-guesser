@@ -20,7 +20,6 @@ const GamePage = async ({ params }: Props) => {
 
   const locations = await getLocationsForGameId(Number(gameId));
 
-
   return (
     <GameWrapper
       gameId={hexToBigInt(gameId)}

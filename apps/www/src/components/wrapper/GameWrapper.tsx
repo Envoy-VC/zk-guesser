@@ -4,7 +4,7 @@ import React from 'react';
 
 import { zkGuesserContract } from '~/lib/viem';
 
-import { useAccount, useReadContracts } from 'wagmi';
+import { useAccount, useReadContract, useReadContracts } from 'wagmi';
 import { ErrorScreen } from '~/screens';
 
 import GuesserMap from '../guesser-map';
@@ -23,35 +23,29 @@ const GameWrapper = ({ children, gameId, locations }: Props) => {
     contracts: [
       {
         ...zkGuesserContract,
-        functionName: '_games',
-        args: [gameId],
-      },
-      {
-        ...zkGuesserContract,
-        functionName: 'isPlayer',
-        args: address ? [address, gameId] : undefined,
-      },
-      {
-        ...zkGuesserContract,
         functionName: '_nextGameId',
         args: [],
+      },
+      {
+        ...zkGuesserContract,
+        functionName: 'getPlayerIndex',
+        args: address ? [address, gameId] : undefined,
       },
     ],
   });
 
-  const currentTime = Math.round(Date.now() / 1000);
-  const startTime = Number(data?.[0]?.result?.[2] ?? BigInt(0));
-  const endTime = startTime + 40 * 60;
-  const gameExists = Number(data?.[2].result ?? BigInt(0)) > Number(gameId);
-  const isPlayer = data?.[1].result ?? false;
-  const currentRound = Math.round(Number((currentTime - startTime) / 300));
+  const gameExists = Number(data?.[0].result ?? BigInt(0)) > Number(gameId);
+  const playerIndex = data?.[1].result ?? 8;
+  const isPlayer = playerIndex === 8;
+
+  const { data: currentRound } = useReadContract({
+    ...zkGuesserContract,
+    functionName: '_currentRound',
+    args: address ? [gameId, playerIndex] : undefined,
+  });
 
   if (!gameExists) {
     return <ErrorScreen message='Game does not exist' />;
-  }
-
-  if (endTime < Math.floor(Date.now() / 1000)) {
-    return <ErrorScreen message='Game has ended' />;
   }
 
   if (!isPlayer) {
@@ -60,9 +54,9 @@ const GameWrapper = ({ children, gameId, locations }: Props) => {
 
   return (
     <GuesserMap
-      location={locations[currentRound]!}
-      startTime={startTime}
+      location={locations[currentRound ?? 0]!}
       gameId={gameId}
+      currentRound={currentRound ?? 0}
     />
   );
 };

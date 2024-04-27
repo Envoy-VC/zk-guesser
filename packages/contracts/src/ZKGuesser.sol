@@ -126,8 +126,8 @@ contract ZKGuesser is Ownable, IZKGuesser {
         return message;
     }
 
-    function isPlayer(address _player, uint256 _gameId) public view returns (bool) {
+    function getPlayerIndex(address _player, uint256 _gameId) public view returns (uint8) {
         Game storage game = _games[_gameId];
-        return GameLib.playerExists(game, _player) < GameLib.MAX_PLAYERS;
+        return GameLib.playerExists(game, _player);
     }
 }

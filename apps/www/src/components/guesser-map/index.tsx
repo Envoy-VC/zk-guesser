@@ -5,11 +5,9 @@ import { MapContainer } from 'react-leaflet';
 import { Rnd as ResizableContainer } from 'react-rnd';
 
 import { calculateDistance } from '~/lib/helpers/coordinates';
-import { parseMinutes } from '~/lib/helpers/time';
 
 import { useNoir } from '~/lib/hooks';
 import { useMapStore } from '~/lib/stores';
-import { zkGuesserContract } from '~/lib/viem';
 
 import { LatLng, Map } from 'leaflet';
 import { polyline } from 'leaflet';
@@ -30,19 +28,16 @@ import { LocationPoint } from '~/types/server';
 
 interface Props {
   location: LocationPoint;
-  startTime: number;
+  currentRound: number;
   gameId: bigint;
 }
 
-const GuesserMap = ({ location, startTime, gameId }: Props) => {
+const GuesserMap = ({ location, gameId, currentRound }: Props) => {
   const { generateProof } = useNoir();
   const { markers, updateMarker } = useMapStore();
   const mapRef = React.useRef<Map>(null);
   const containerRef = React.useRef<ResizableContainer>(null);
 
-  const [currentRound, setCurrentRound] = React.useState<number>(0);
-  const [timeUntilNextRound, setTimeUntilNextRound] = React.useState<number>(0);
-  const [isRoundOver, setIsRoundOver] = React.useState<boolean>(false);
   const [isGuessing, setIsGuessing] = React.useState<boolean>(false);
 
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
@@ -56,10 +51,6 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
   };
 
   const onGuess = async () => {
-    if (isRoundOver) {
-      window.location.reload();
-      return;
-    }
     try {
       setIsGuessing(true);
       const proof = await generateProof(
@@ -70,10 +61,8 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
       );
 
       if (!proof) {
-        throw new Error('Error .');
+        throw new Error('Something Went Wrong.');
       }
-
-      console.log(proof.proof);
 
       addPolyline();
       setIsDialogOpen(true);
@@ -82,27 +71,6 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
       toast.error((error as Error).message);
     }
   };
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Math.round(Date.now() / 1000);
-      const timeElapsed = now - startTime;
-      const round = Math.floor(timeElapsed / 300);
-      const timeUntilNextRound = 300 - (timeElapsed % 300);
-      setCurrentRound(round);
-      setTimeUntilNextRound(timeUntilNextRound);
-      if (timeUntilNextRound === 1) {
-        setIsRoundOver(true);
-        setTimeUntilNextRound(0);
-      }
-    }, 1000);
-
-    if (isRoundOver) {
-      clearInterval(interval);
-    }
-
-    return () => clearInterval(interval);
-  }, [startTime, isRoundOver]);
 
   return (
     <div className='relative h-screen w-full'>
@@ -163,18 +131,9 @@ const GuesserMap = ({ location, startTime, gameId }: Props) => {
               {currentRound + 1}
             </div>
           </div>
-          <div className='flex flex-row items-center gap-2'>
-            <Button className='h-8' onClick={onGuess} disabled={isGuessing}>
-              {isRoundOver
-                ? 'Next Round'
-                : isGuessing
-                  ? 'Guessing...'
-                  : 'Guess'}
-            </Button>
-            <div className='font-medium'>
-              {parseMinutes(timeUntilNextRound)}
-            </div>
-          </div>
+          <Button className='h-8' onClick={onGuess} disabled={isGuessing}>
+            {isGuessing ? 'Guessing...' : 'Guess'}
+          </Button>
         </div>
         <MapContainer
           ref={mapRef}

@@ -70,22 +70,22 @@ export const ZK_GUESSER_ABI = [
   },
   {
     type: 'function',
+    name: 'getPlayerIndex',
+    inputs: [
+      { name: '_player', type: 'address', internalType: 'address' },
+      { name: '_gameId', type: 'uint256', internalType: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'uint8', internalType: 'uint8' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'getSigningMessage',
     inputs: [
       { name: '_player', type: 'address', internalType: 'address' },
       { name: '_gameId', type: 'uint256', internalType: 'uint256' },
     ],
     outputs: [{ name: '', type: 'bytes32', internalType: 'bytes32' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    name: 'isPlayer',
-    inputs: [
-      { name: '_player', type: 'address', internalType: 'address' },
-      { name: '_gameId', type: 'uint256', internalType: 'uint256' },
-    ],
-    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
     stateMutability: 'view',
   },
   {
