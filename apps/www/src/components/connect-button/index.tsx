@@ -2,7 +2,15 @@
 
 import React from 'react';
 
-import { useAccount, useConnect, useEnsAvatar, useEnsName } from 'wagmi';
+import { zkGuesserContract } from '~/lib/viem';
+
+import {
+  useAccount,
+  useConnect,
+  useEnsAvatar,
+  useEnsName,
+  useReadContract,
+} from 'wagmi';
 
 import { Button } from '~/components/ui/button';
 import { Skeleton } from '~/components/ui/skeleton';
@@ -16,13 +24,15 @@ const ConnectButton = () => {
     chainId: 1,
   });
 
-  const {
-    data: ensAvatar,
-    isLoading: ensAvatarLoading,
-    isFetched,
-  } = useEnsAvatar({
+  const { data: ensAvatar, isLoading: ensAvatarLoading } = useEnsAvatar({
     name: ensName ?? undefined,
     chainId: 1,
+  });
+
+  const { data: balance } = useReadContract({
+    ...zkGuesserContract,
+    functionName: '_totalScores',
+    args: address ? [address] : undefined,
   });
 
   const onConnect = async () => {
@@ -71,7 +81,7 @@ const ConnectButton = () => {
               <div>{ensName}</div>
             )}
             <div className='hidden lg:flex'>{getDay()}</div>
-            <div className=''>$324</div>
+            <div className=''>${Math.round(Number(balance ?? 0) / 10e6)}</div>
           </div>
           <div className='aspect-square w-12 lg:w-24'>
             {(ensAvatarLoading || !ensAvatar) && (

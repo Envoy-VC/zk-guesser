@@ -24,7 +24,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '~/components/ui/carousel';
-import { Input } from '~/components/ui/input';
 
 import { Button } from '../ui/button';
 
@@ -69,12 +68,14 @@ const CreateGame = () => {
       const locations = getGameLocations(region);
       console.log(locations);
 
+      console.log(nextGameId);
       await writeContractAsync({
         ...zkGuesserContract,
         functionName: 'createGame',
       });
 
       await storeGameLocations(Number(nextGameId), locations);
+      toast.success(`Game created successfully`);
     } catch (error) {
       toast.error((error as Error).message);
     } finally {

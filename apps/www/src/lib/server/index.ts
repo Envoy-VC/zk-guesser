@@ -27,7 +27,5 @@ export const storeGameLocations = async (
     VALUES
     (${gameId}, ARRAY[${Points.join(',')}])`;
 
-  console.log(query);
-
-  // await sql.query(query);
+  await sql.query(query);
 };
