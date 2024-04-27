@@ -39,12 +39,6 @@ const GameWrapper = ({ gameId, locations }: Props) => {
 
   const isPlayer = playerIndex !== 8;
 
-  const { data: currentRound } = useReadContract({
-    ...zkGuesserContract,
-    functionName: '_currentRound',
-    args: playerIndex ? [gameId, playerIndex] : undefined,
-  });
-
   if (!gameExists) {
     return <ErrorScreen message='Game does not exist' />;
   }
@@ -54,12 +48,35 @@ const GameWrapper = ({ gameId, locations }: Props) => {
   }
 
   return (
-    <GuesserMap
-      location={locations[currentRound ?? 0]!}
+    <Map
+      locations={locations}
       gameId={gameId}
-      currentRound={currentRound ?? 0}
+      playerIndex={Number(playerIndex)}
     />
   );
+};
+
+interface MapProps {
+  locations: LocationPoint[];
+  gameId: bigint;
+  playerIndex: number;
+}
+
+const Map = ({ locations, gameId, playerIndex }: MapProps) => {
+  const { data: currentRound } = useReadContract({
+    ...zkGuesserContract,
+    functionName: '_currentRound',
+    args: [gameId, playerIndex],
+  });
+
+  if (currentRound)
+    return (
+      <GuesserMap
+        location={locations[currentRound]!}
+        gameId={gameId}
+        currentRound={currentRound}
+      />
+    );
 };
 
 export default GameWrapper;

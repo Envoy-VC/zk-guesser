@@ -75,7 +75,9 @@ const CreateGame = () => {
       });
 
       await storeGameLocations(Number(nextGameId), locations);
-      toast.success(`Game created successfully`);
+      toast.success(`Game created successfully`, {
+        description: `Game ID: ${Number(nextGameId)}`,
+      });
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
