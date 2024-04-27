@@ -6,7 +6,48 @@ import area from '@turf/area';
 // @ts-ignore
 import bboxPolygon from '@turf/bbox-polygon';
 
+import { LocationPoint } from '~/types/server';
+
 export type Regions = 'nam' | 'eur' | 'afr' | 'asi' | 'oce' | 'wrl';
+
+export const GameRegions = [
+  {
+    name: 'World',
+    value: 'wrl',
+    image:
+      'https://us.123rf.com/450wm/kerdazz/kerdazz1403/kerdazz140300008/26817433-abstract-map-of-the-world-made-of-3d-blue-boxes.jpg?ver=6',
+  },
+  {
+    name: 'North America',
+    value: 'nam',
+    image:
+      'https://us.123rf.com/450wm/ahasoft2000/ahasoft20001804/ahasoft2000180406672/99602845-winter-north-america-map-vector-geographic-map-in-blue-frosty-colors-vector-concept-of-north-america.jpg?ver=6',
+  },
+  {
+    name: 'Europe',
+    value: 'eur',
+    image:
+      'https://us.123rf.com/450wm/kerdazz/kerdazz1403/kerdazz140300037/26956338-abstract-map-of-the-europe-made-of-blue-and-white-boxes.jpg?ver=6',
+  },
+  {
+    name: 'Africa',
+    value: 'afr',
+    image:
+      'https://us.123rf.com/450wm/kerdazz/kerdazz1403/kerdazz140300016/26956290-abstract-map-of-the-africa-made-of-blue-and-white-boxes.jpg?ver=6',
+  },
+  {
+    name: 'Asia',
+    value: 'asi',
+    image:
+      'https://us.123rf.com/450wm/kerdazz/kerdazz1403/kerdazz140300031/26956315-abstract-map-of-the-asia-made-of-blue-and-white-boxes.jpg?ver=6',
+  },
+  {
+    name: 'Oceania',
+    value: 'oce',
+    image:
+      'https://us.123rf.com/450wm/kerdazz/kerdazz1403/kerdazz140300034/26956325-abstract-map-of-the-australia-made-of-blue-and-white-boxes.jpg?ver=6',
+  },
+] as const;
 
 const randRange = (min: number, max: number, integer = true) =>
   ((wt) => (integer ? Math.round(wt) : wt))(Math.random() * (max - min) + min);
@@ -61,10 +102,14 @@ export function genRandomCoords(region: Regions) {
   ];
 }
 
-export const getGameLocations = () => {
-  const locations = [];
+export const getGameLocations = (region: Regions) => {
+  const locations: LocationPoint[] = [];
   for (let i = 0; i < 8; i++) {
-    locations.push(genRandomCoords('wrl'));
+    const [lat, lon] = genRandomCoords(region);
+    locations.push({
+      x: lat,
+      y: lon,
+    });
   }
   return locations;
 };

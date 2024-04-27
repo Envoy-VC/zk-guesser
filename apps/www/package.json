@@ -30,6 +30,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "deck.gl": "^9.0.10",
+    "embla-carousel-react": "^8.0.2",
     "framer-motion": "^11.1.7",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.373.0",

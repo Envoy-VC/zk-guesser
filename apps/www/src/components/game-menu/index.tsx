@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 
 import ConnectButton from '../connect-button';
 import { Button } from '../ui/button';
+import CreateGame from './Create';
+import Play from './Play';
 
 const GameMenu = () => {
   const { activeItem, setActiveItem } = useGameMenu();
@@ -49,8 +51,9 @@ const GameMenu = () => {
         </div>
         <ConnectButton />
       </div>
-      <div className='my-4 w-full max-w-screen-2xl rounded-md border border-neutral-500 bg-neutral-600/20 p-12 backdrop-blur-sm'>
-        <Button variant='secondary'>Generate Proof</Button>
+      <div className='my-4 w-full max-w-screen-2xl rounded-md border border-neutral-500 bg-neutral-600/20 p-6 backdrop-blur-sm'>
+        {activeItem === 'play' && <Play />}
+        {activeItem === 'create-game' && <CreateGame />}
       </div>
     </div>
   );
