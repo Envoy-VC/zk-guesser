@@ -67,6 +67,8 @@ const CreateGame = () => {
       const region = GameRegions[current - 1]?.value!;
       const locations = getGameLocations(region);
 
+      console.log(locations);
+
       await writeContractAsync({
         ...zkGuesserContract,
         functionName: 'createGame',

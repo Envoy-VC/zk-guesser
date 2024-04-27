@@ -24,7 +24,3 @@ contract DeployScript is Script {
         vm.stopBroadcast();
     }
 }
-
-// source .env && forge script script/Deploy.s.sol:DeployScript --rpc-url $SCROLL_SEPOLIA_RPC --broadcast --verify -vvvv
-
-// 		"verify": "source .env && forge verify-contract 0xe86b1899376c77e1a109eA2124E462EF58E56897 src/BattleshipX.sol:BattleshipX --watch --chain-id 421614 --constructor-args $(cast abi-encode 'constructor(string,uint256,address,uint16)' '' 10000 0xe269688F24e1C7487f649fC3dCD99A4Bf15bDaA1 0) --libraries src/lib/BattleshipURI.sol:BattleshipURI:0x8f966BC6Ad2D241a01C1f7634C47c7419Ce96830"

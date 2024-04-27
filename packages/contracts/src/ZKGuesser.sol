@@ -23,6 +23,13 @@ contract ZKGuesser is Ownable, IZKGuesser {
         _verifier = UltraVerifier(verifier_);
     }
 
+    modifier gameExists(uint256 _gameId) {
+        if (_gameId >= _nextGameId) {
+            revert GameNotExists(_gameId);
+        }
+        _;
+    }
+
     function createGame() public returns (uint256) {
         uint256 gameId = _nextGameId;
         _games[gameId] = Game({id: gameId, totalRounds: GameLib.MAX_ROUNDS, totalPlayers: 1, players: new address[](8)});
@@ -32,13 +39,12 @@ contract ZKGuesser is Ownable, IZKGuesser {
         return gameId;
     }
 
-    function joinGame(uint256 _gameId) public {
-        if (_gameId >= _nextGameId) {
-            revert GameNotExists(_gameId);
-        }
+    function joinGame(uint256 _gameId) public gameExists(_gameId) {
         Game storage game = _games[_gameId];
 
-        if (GameLib.playerExists(game, msg.sender) < GameLib.MAX_PLAYERS) {
+        uint8 playerIdx = GameLib.getPlayerIndex(game, msg.sender);
+
+        if (playerIdx < GameLib.MAX_PLAYERS) {
             revert PlayerAlreadyJoined(_gameId, msg.sender);
         }
 
@@ -50,84 +56,57 @@ contract ZKGuesser is Ownable, IZKGuesser {
         game.totalPlayers++;
     }
 
-    function makeGuess(uint256 _gameId, bytes calldata _proof) public returns (uint256) {
-        if (_gameId >= _nextGameId) {
-            revert GameNotExists(_gameId);
-        }
-
+    function makeGuess(uint256 _gameId, bytes32 range_start, bytes32 range_end, bytes calldata _proof)
+        public
+        gameExists(_gameId)
+        returns (uint256)
+    {
         Game storage game = _games[_gameId];
-        uint8 playerIdx = GameLib.playerExists(game, msg.sender);
-
+        uint8 playerIdx = GameLib.getPlayerIndex(game, msg.sender);
+        // Check if Player Exists
         if (playerIdx == GameLib.MAX_PLAYERS) {
             revert InvalidPlayer(_gameId, msg.sender);
         }
 
+        // Check if all rounds are over
         uint8 currentRound = _currentRound[_gameId][playerIdx];
-        if (currentRound >= game.totalRounds) {
+        if (currentRound > game.totalRounds) {
             revert InvalidRound(_gameId, msg.sender, currentRound);
         }
 
-        _currentRound[_gameId][playerIdx]++;
+        // Get Score according to Range
+        uint256 score = GameLib.getScore(range_start, range_end);
 
-        uint256 score = getScore(msg.sender, game, currentRound, _proof);
-        _scores[_gameId][playerIdx] += score;
-        _totalScores[msg.sender] += score;
-        return score;
-    }
+        // Verify Proof of Score
+        bytes32 start = range_start;
+        bytes32 end = range_end;
+        uint256 gameId = _gameId;
 
-    function getScore(address player, Game memory game, uint8 currentRound, bytes calldata _proof)
-        internal
-        view
-        returns (uint256)
-    {
+        bytes32[32] memory messageHash = GameLib.createHashMessage(msg.sender, game.id, currentRound, start, end);
+
         bytes32[] memory _publicInputs = new bytes32[](35);
-        bytes32[32] memory messageHash = GameLib.createHashMessage(player, game.id, currentRound);
-
+        _publicInputs[0] = start;
+        _publicInputs[1] = end;
         _publicInputs[2] = GameLib.padAddress(owner());
         for (uint256 i = 0; i < 32; i++) {
             _publicInputs[i + 3] = messageHash[i];
         }
 
-        uint256 score = 0;
+        bool success = _verifier.verify(_proof, _publicInputs);
 
-        _publicInputs[0] = GameLib.ONE;
-        _publicInputs[1] = GameLib.THOUSAND;
+        if (!success) {
+            revert InvalidProof(gameId, msg.sender, currentRound);
+        }
 
-        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 10;
-        } catch {}
-
-        _publicInputs[0] = GameLib.THOUSAND;
-        _publicInputs[1] = GameLib.FIVE_THOUSAND;
-        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 6;
-        } catch {}
-
-        _publicInputs[0] = GameLib.FIVE_THOUSAND;
-        _publicInputs[1] = GameLib.TEN_THOUSAND;
-        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 3;
-        } catch {}
-
-        _publicInputs[0] = GameLib.TEN_THOUSAND;
-        _publicInputs[1] = GameLib.TWENTY_THOUSAND;
-        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 1;
-        } catch {}
-
-        return score * (GameLib.BASE_REWARD) * (10 ** GameLib.DECIMALS);
-    }
-
-    function getSigningMessage(address _player, uint256 _gameId) public view returns (bytes32) {
-        Game storage game = _games[_gameId];
-        uint8 playerIdx = GameLib.playerExists(game, msg.sender);
-        uint8 currentRound = _currentRound[_gameId][playerIdx];
-        bytes32 message = keccak256(abi.encodePacked(_player, _gameId, currentRound));
-        return message;
+        // Update State Variables
+        _currentRound[gameId][playerIdx]++;
+        _scores[gameId][playerIdx] += score;
+        _totalScores[msg.sender] += score;
+        return score;
     }
 
     function getPlayerIndex(address _player, uint256 _gameId) public view returns (uint8) {
         Game storage game = _games[_gameId];
-        return GameLib.playerExists(game, _player);
+        return GameLib.getPlayerIndex(game, _player);
     }
 }

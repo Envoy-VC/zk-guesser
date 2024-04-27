@@ -16,7 +16,7 @@ interface Props extends React.PropsWithChildren {
   locations: LocationPoint[];
 }
 
-const GameWrapper = ({ children, gameId, locations }: Props) => {
+const GameWrapper = ({ gameId, locations }: Props) => {
   const { address } = useAccount();
 
   const { data } = useReadContracts({
@@ -35,13 +35,14 @@ const GameWrapper = ({ children, gameId, locations }: Props) => {
   });
 
   const gameExists = Number(data?.[0].result ?? BigInt(0)) > Number(gameId);
-  const playerIndex = data?.[1].result ?? 8;
-  const isPlayer = playerIndex === 8;
+  const playerIndex = data?.[1].result;
+
+  const isPlayer = playerIndex !== 8;
 
   const { data: currentRound } = useReadContract({
     ...zkGuesserContract,
     functionName: '_currentRound',
-    args: address ? [gameId, playerIndex] : undefined,
+    args: playerIndex ? [gameId, playerIndex] : undefined,
   });
 
   if (!gameExists) {

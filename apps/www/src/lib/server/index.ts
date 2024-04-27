@@ -19,7 +19,7 @@ export const storeGameLocations = async (
   const Points = Array(8)
     .fill(true)
     .map(
-      (val, index) => `POINT(${locations[index]?.x},${locations[index]?.x})`
+      (val, index) => `POINT(${locations[index]?.x},${locations[index]?.y})`
     );
 
   const query = `

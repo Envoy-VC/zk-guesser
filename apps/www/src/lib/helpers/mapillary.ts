@@ -7,6 +7,7 @@ export const getMapillaryImage = async (location: LocationPoint) => {
   const lat = Number(x.toFixed(3));
   const lon = Number(y.toFixed(3));
 
+
   const getImage = async (precision: number) => {
     const box = {
       x1: Number((lon - precision).toFixed(3)),

@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 
 import { useRouter } from 'next/navigation';
@@ -31,7 +30,7 @@ const Play = () => {
     if (!id) {
       throw new Error('Invalid Game Id');
     }
-    const [gameId, , startAt, totalPlayers] = await readContract(config, {
+    const [gameId, totalRounds, totalPlayers] = await readContract(config, {
       ...zkGuesserContract,
       functionName: '_games',
       args: [BigInt(parseInt(id))],
@@ -39,10 +38,6 @@ const Play = () => {
 
     if (Number(totalPlayers) === 0) {
       throw new Error('Game not found');
-    }
-    const FIVE_MINUTES = 5 * 60;
-    if (Number(startAt) + 8 * FIVE_MINUTES < Math.round(Date.now() / 1000)) {
-      throw new Error('Game Ended');
     }
 
     return gameId;
@@ -67,13 +62,13 @@ const Play = () => {
   const onGoToGame = async () => {
     try {
       const gameId = await checks(id2);
-      const isPlayer = await readContract(config, {
+      const playerIndex = await readContract(config, {
         ...zkGuesserContract,
-        functionName: 'isPlayer',
+        functionName: 'getPlayerIndex',
         args: [address!, gameId],
       });
 
-      if (!isPlayer) {
+      if (playerIndex === 8) {
         throw new Error('You must join the game first');
       }
 

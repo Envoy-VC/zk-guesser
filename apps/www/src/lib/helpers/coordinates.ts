@@ -88,3 +88,23 @@ export const serializeCoordinates = (
     },
   };
 };
+
+export const getRange = (distance: number) => {
+  let range: [number, number] = [0, 0];
+
+  if (distance > 0 && distance <= 500) {
+    range = [1, 500];
+  } else if (distance > 500 && distance <= 1000) {
+    range = [500, 1000];
+  } else if (distance > 1000 && distance <= 3000) {
+    range = [1000, 3000];
+  } else if (distance > 3000 && distance <= 5000) {
+    range = [3000, 5000];
+  } else if (distance > 5000 && distance <= 10000) {
+    range = [5000, 10000];
+  } else {
+    range = [10000, 20000];
+  }
+
+  return range;
+};

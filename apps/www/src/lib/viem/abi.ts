@@ -80,16 +80,6 @@ export const ZK_GUESSER_ABI = [
   },
   {
     type: 'function',
-    name: 'getSigningMessage',
-    inputs: [
-      { name: '_player', type: 'address', internalType: 'address' },
-      { name: '_gameId', type: 'uint256', internalType: 'uint256' },
-    ],
-    outputs: [{ name: '', type: 'bytes32', internalType: 'bytes32' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
     name: 'joinGame',
     inputs: [{ name: '_gameId', type: 'uint256', internalType: 'uint256' }],
     outputs: [],
@@ -100,6 +90,8 @@ export const ZK_GUESSER_ABI = [
     name: 'makeGuess',
     inputs: [
       { name: '_gameId', type: 'uint256', internalType: 'uint256' },
+      { name: 'range_start', type: 'bytes32', internalType: 'bytes32' },
+      { name: 'range_end', type: 'bytes32', internalType: 'bytes32' },
       { name: '_proof', type: 'bytes', internalType: 'bytes' },
     ],
     outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
@@ -161,6 +153,15 @@ export const ZK_GUESSER_ABI = [
     inputs: [
       { name: '_gameId', type: 'uint256', internalType: 'uint256' },
       { name: 'player', type: 'address', internalType: 'address' },
+    ],
+  },
+  {
+    type: 'error',
+    name: 'InvalidProof',
+    inputs: [
+      { name: '_gameId', type: 'uint256', internalType: 'uint256' },
+      { name: 'player', type: 'address', internalType: 'address' },
+      { name: 'round', type: 'uint8', internalType: 'uint8' },
     ],
   },
   {

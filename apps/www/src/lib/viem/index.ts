@@ -26,7 +26,7 @@ export const config = createConfig({
 
 export const zkGuesserContract = {
   abi: ZK_GUESSER_ABI,
-  address: '0x78D023dC5AB81d9D6A63a1fc3A54503fDA921769',
+  address: '0xB2aF159C02B708F3270929d6D2b0E01b415CBFaB',
 } as const;
 
 declare module 'wagmi' {

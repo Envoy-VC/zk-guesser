@@ -41,7 +41,12 @@ contract ZKGuesserTest is Test {
         string memory proof = vm.readLine("../circuits/proofs/zk_guesser.proof");
         bytes memory proofBytes = vm.parseBytes(proof);
 
-        uint256 score = zkGuesser.makeGuess(gameId, proofBytes);
-        assert(score == 100000000);
+        console.log(user.addr);
+
+        bytes32 ONE = bytes32(0x0000000000000000000000000000000000000000000000000000000000000001);
+        bytes32 FIVE_HUNDRED = bytes32(0x00000000000000000000000000000000000000000000000000000000000001F4);
+
+        uint256 score = zkGuesser.makeGuess(gameId, ONE, FIVE_HUNDRED, proofBytes);
+        assert(score == 1000000000);
     }
 }

@@ -3,12 +3,13 @@ import {
   foreignCallHandler,
   serializeCoordinates,
 } from '~/lib/helpers/coordinates';
+import { getRange } from '~/lib/helpers/coordinates';
 
 import { noirCircuit } from '~/lib/circuit';
 
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import { Noir } from '@noir-lang/noir_js';
-import { encodePacked, keccak256, toHex } from 'viem';
+import { encodePacked, keccak256, padHex, toHex } from 'viem';
 import { useAccount, useWriteContract } from 'wagmi';
 
 import { getSignedMessage, zkGuesserContract } from '../viem';
@@ -36,16 +37,9 @@ const useNoir = () => {
         _guess[1]
       );
 
-      let range: [number, number] = [0, 0];
-      if (distance > 0 && distance <= 1000) {
-        range = [1, 1000];
-      } else if (distance > 1000 && distance <= 5000) {
-        range = [1001, 5000];
-      } else if (distance > 5000 && distance <= 10000) {
-        range = [5001, 10000];
-      } else {
-        range = [10001, 20000];
-      }
+      const range = getRange(distance);
+      const padded_start = padHex(toHex(range[0]));
+      const padded_end = padHex(toHex(range[1]));
 
       if (!address) throw new Error('Please connect your wallet.');
       const backend = new BarretenbergBackend(noirCircuit, { threads: 10 });
@@ -53,8 +47,8 @@ const useNoir = () => {
 
       const message = keccak256(
         encodePacked(
-          ['address', 'uint256', 'uint8'],
-          [address, gameId, currentRound]
+          ['address', 'uint256', 'uint8', 'bytes32', 'bytes32'],
+          [address, gameId, currentRound, padded_start, padded_end]
         )
       );
 
@@ -80,7 +74,7 @@ const useNoir = () => {
       const res = await writeContractAsync({
         ...zkGuesserContract,
         functionName: 'makeGuess',
-        args: [gameId, hexProof],
+        args: [gameId, padded_start, padded_end, hexProof],
       });
 
       return {

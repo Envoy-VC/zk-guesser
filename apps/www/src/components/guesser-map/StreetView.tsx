@@ -17,12 +17,11 @@ interface Props {
 const StreetView = ({ location }: Props) => {
   const viewerRef = useRef<HTMLDivElement>(null);
 
-  const { data: image } = useQuery({
+  const { data: image, isLoading } = useQuery({
     queryKey: ['mapillary-image', location.x, location.y],
     staleTime: 1000 * 60 * 60,
     queryFn: async () => {
       const res = await getMapillaryImage(location);
-      console.log(res, location);
       return res;
     },
   });
@@ -47,6 +46,14 @@ const StreetView = ({ location }: Props) => {
       viewer.remove();
     };
   }, [image]);
+
+  if (isLoading) {
+    return (
+      <div className='flex h-full w-full items-center justify-center bg-black/90'>
+        <div className='font-pricedown text-6xl text-white'>Loading...</div>
+      </div>
+    );
+  }
 
   return <div ref={viewerRef} className='z-[1000] h-full w-full border'></div>;
 };
