@@ -80,7 +80,7 @@ const GuesserMap = ({ location, gameId, currentRound }: Props) => {
       />
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogContent className='z-[200]'>
-          <div className='flex w-full flex-col p-6 text-center'>
+          <div className='flex w-full flex-col px-6 py-2 text-center'>
             <div>Your Guess was</div>
             <div className='text-5xl'>
               {calculateDistance(

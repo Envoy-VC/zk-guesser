@@ -63,20 +63,19 @@ interface MapProps {
 }
 
 const Map = ({ locations, gameId, playerIndex }: MapProps) => {
-  const { data: currentRound } = useReadContract({
+  const { isLoading, data } = useReadContract({
     ...zkGuesserContract,
     functionName: '_currentRound',
     args: [gameId, playerIndex],
   });
 
-  if (currentRound)
-    return (
-      <GuesserMap
-        location={locations[currentRound]!}
-        gameId={gameId}
-        currentRound={currentRound}
-      />
-    );
+  return (
+    <GuesserMap
+      location={locations[data ?? 0]!}
+      gameId={gameId}
+      currentRound={data ?? 0}
+    />
+  );
 };
 
 export default GameWrapper;
