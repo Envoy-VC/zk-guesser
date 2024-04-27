@@ -74,16 +74,16 @@ const ConnectButton = () => {
             <div className=''>$324</div>
           </div>
           <div className='aspect-square w-12 lg:w-24'>
-            {isFetched && ensAvatar && (
+            {(ensAvatarLoading || !ensAvatar) && (
+              <Skeleton className='h-full w-full rounded-lg' />
+            )}
+            {ensAvatar && (
               <div className='rounded-sm bg-white/50 p-[3px] lg:rounded-xl'>
                 <img
-                  src={ensAvatar}
+                  src={ensAvatar ?? ''}
                   className='h-full w-full rounded-lg object-cover'
                 />
               </div>
-            )}
-            {ensAvatarLoading && !ensAvatar && (
-              <Skeleton className='h-full w-full rounded-lg' />
             )}
           </div>
         </div>
