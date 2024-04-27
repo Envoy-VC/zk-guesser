@@ -14,7 +14,7 @@ export const ZK_GUESSER_ABI = [
       { name: '', type: 'uint256', internalType: 'uint256' },
       { name: '', type: 'uint8', internalType: 'uint8' },
     ],
-    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    outputs: [{ name: '', type: 'uint8', internalType: 'uint8' }],
     stateMutability: 'view',
   },
   {
@@ -24,7 +24,6 @@ export const ZK_GUESSER_ABI = [
     outputs: [
       { name: 'id', type: 'uint256', internalType: 'uint256' },
       { name: 'totalRounds', type: 'uint8', internalType: 'uint8' },
-      { name: 'startTime', type: 'uint256', internalType: 'uint256' },
       { name: 'totalPlayers', type: 'uint8', internalType: 'uint8' },
     ],
     stateMutability: 'view',
@@ -145,11 +144,6 @@ export const ZK_GUESSER_ABI = [
       },
     ],
     anonymous: false,
-  },
-  {
-    type: 'error',
-    name: 'GameEnded',
-    inputs: [{ name: '_gameId', type: 'uint256', internalType: 'uint256' }],
   },
   {
     type: 'error',

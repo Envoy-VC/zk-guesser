@@ -42,12 +42,6 @@ contract ZKGuesserTest is Test {
         bytes memory proofBytes = vm.parseBytes(proof);
 
         uint256 score = zkGuesser.makeGuess(gameId, proofBytes);
-        assert(score == 4000000000);
-        // 0 min - 4000000000
-        // 1 min - 3400000000
-        // 2 min - 2800000000
-        // 3 min - 2200000000
-        // 4 min - 1600000000
-        // 5 min - 1010000000
+        assert(score == 100000000);
     }
 }

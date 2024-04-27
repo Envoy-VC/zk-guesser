@@ -16,7 +16,8 @@ contract ZKGuesser is Ownable, IZKGuesser {
     mapping(uint256 => mapping(uint8 => uint256)) public _scores;
     // Player => Total Score
     mapping(address => uint256) public _totalScores;
-    mapping(uint256 => mapping(uint8 => uint256)) public _currentRound;
+    // GameID => Player Index => Current Round
+    mapping(uint256 => mapping(uint8 => uint8)) public _currentRound;
 
     constructor(address verifier_, address initialOwner_) Ownable(initialOwner_) {
         _verifier = UltraVerifier(verifier_);
@@ -24,13 +25,7 @@ contract ZKGuesser is Ownable, IZKGuesser {
 
     function createGame() public returns (uint256) {
         uint256 gameId = _nextGameId;
-        _games[gameId] = Game({
-            id: gameId,
-            totalRounds: GameLib.MAX_ROUNDS,
-            startTime: block.timestamp,
-            totalPlayers: 1,
-            players: new address[](8)
-        });
+        _games[gameId] = Game({id: gameId, totalRounds: GameLib.MAX_ROUNDS, totalPlayers: 1, players: new address[](8)});
 
         _games[_nextGameId].players[0] = msg.sender;
         _nextGameId++;
@@ -47,10 +42,6 @@ contract ZKGuesser is Ownable, IZKGuesser {
             revert PlayerAlreadyJoined(_gameId, msg.sender);
         }
 
-        if (GameLib.isGameEnded(game)) {
-            revert GameEnded(_gameId);
-        }
-
         if (GameLib.isFull(game)) {
             revert GameFull(_gameId);
         }
@@ -65,21 +56,18 @@ contract ZKGuesser is Ownable, IZKGuesser {
         }
 
         Game storage game = _games[_gameId];
-        if (GameLib.isGameEnded(game)) {
-            revert GameEnded(_gameId);
-        }
         uint8 playerIdx = GameLib.playerExists(game, msg.sender);
 
         if (playerIdx == GameLib.MAX_PLAYERS) {
             revert InvalidPlayer(_gameId, msg.sender);
         }
 
-        uint8 currentRound = GameLib.getCurrentRound(game);
-        if (_currentRound[_gameId][playerIdx] > currentRound) {
+        uint8 currentRound = _currentRound[_gameId][playerIdx];
+        if (currentRound >= game.totalRounds) {
             revert InvalidRound(_gameId, msg.sender, currentRound);
         }
 
-        _currentRound[_gameId][playerIdx] = currentRound + 1;
+        _currentRound[_gameId][playerIdx]++;
 
         uint256 score = getScore(msg.sender, game, currentRound, _proof);
         _scores[_gameId][playerIdx] += score;
@@ -101,8 +89,6 @@ contract ZKGuesser is Ownable, IZKGuesser {
         }
 
         uint256 score = 0;
-        uint256 _timeLeft = uint256(GameLib.TIME_PER_ROUND)
-            - (block.timestamp - game.startTime - (uint256(currentRound) * uint256(GameLib.TIME_PER_ROUND)));
 
         _publicInputs[0] = GameLib.ONE;
         _publicInputs[1] = GameLib.THOUSAND;
@@ -114,21 +100,28 @@ contract ZKGuesser is Ownable, IZKGuesser {
         _publicInputs[0] = GameLib.THOUSAND;
         _publicInputs[1] = GameLib.FIVE_THOUSAND;
         try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 5;
+            if (result) score = 6;
         } catch {}
 
         _publicInputs[0] = GameLib.FIVE_THOUSAND;
         _publicInputs[1] = GameLib.TEN_THOUSAND;
         try _verifier.verify(_proof, _publicInputs) returns (bool result) {
-            if (result) score = 2;
+            if (result) score = 3;
         } catch {}
 
-        return (score * ((GameLib.BASE_REWARD) + (_timeLeft * GameLib.TIME_MULTIPLIER)) * (10 ** GameLib.DECIMALS));
+        _publicInputs[0] = GameLib.TEN_THOUSAND;
+        _publicInputs[1] = GameLib.TWENTY_THOUSAND;
+        try _verifier.verify(_proof, _publicInputs) returns (bool result) {
+            if (result) score = 1;
+        } catch {}
+
+        return score * (GameLib.BASE_REWARD) * (10 ** GameLib.DECIMALS);
     }
 
     function getSigningMessage(address _player, uint256 _gameId) public view returns (bytes32) {
         Game storage game = _games[_gameId];
-        uint8 currentRound = GameLib.getCurrentRound(game);
+        uint8 playerIdx = GameLib.playerExists(game, msg.sender);
+        uint8 currentRound = _currentRound[_gameId][playerIdx];
         bytes32 message = keccak256(abi.encodePacked(_player, _gameId, currentRound));
         return message;
     }

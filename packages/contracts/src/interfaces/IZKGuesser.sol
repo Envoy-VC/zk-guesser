@@ -4,7 +4,6 @@ pragma solidity ^0.8.23;
 struct Game {
     uint256 id;
     uint8 totalRounds;
-    uint256 startTime;
     uint8 totalPlayers;
     address[] players;
 }
