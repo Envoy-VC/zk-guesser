@@ -7,6 +7,8 @@ import { cookieToInitialState } from 'wagmi';
 import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 
+import { Toaster } from '~/components/ui/sonner';
+
 const chaletFont = localFont({
   src: '../../public/fonts/chalet.ttf',
   variable: '--font-sans',
@@ -28,7 +30,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <Web3Provider initialState={initialState}>
-        <body className={`font-sans ${chaletFont.variable}`}>{children}</body>
+        <body className={`font-sans ${chaletFont.variable}`}>
+          {children}
+          <Toaster />
+        </body>
       </Web3Provider>
     </html>
   );

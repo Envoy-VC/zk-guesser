@@ -67,4 +67,4 @@ export const getGameLocations = () => {
     locations.push(genRandomCoords('wrl'));
   }
   return locations;
-}
+};

@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet';
+import { Marker, Popup, TileLayer, useMapEvent } from 'react-leaflet';
+
+import { useMapStore } from '~/lib/stores';
 
 import { Icon } from 'leaflet';
 import { LeafletMouseEvent } from 'leaflet';
@@ -10,17 +12,11 @@ import MarkerShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 
 const MiniMap = () => {
-  const map = useMap();
+  const { markers, updateMarker } = useMapStore();
 
-  const [markerPos, setMarkerPos] = React.useState<[number, number]>([
-    51.505, -0.09,
-  ]);
-
-  const onClick = (e: LeafletMouseEvent) => {
-    setMarkerPos([e.latlng.lat, e.latlng.lng]);
-  };
-
-  useMapEvent('click', onClick);
+  useMapEvent('click', (e: LeafletMouseEvent) => {
+    updateMarker('guess', [e.latlng.lat, e.latlng.lng]);
+  });
 
   return (
     <>
@@ -37,12 +33,28 @@ const MiniMap = () => {
             shadowSize: [41, 41],
           })
         }
-        position={markerPos}
+        position={markers.guess}
       >
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
+        <Popup>Guess</Popup>
       </Marker>
+      {markers.answer && (
+        <Marker
+          icon={
+            new Icon({
+              iconUrl: MarkerIcon.src,
+              iconRetinaUrl: MarkerIcon.src,
+              iconSize: [25, 41],
+              iconAnchor: [12.5, 41],
+              popupAnchor: [0, -41],
+              shadowUrl: MarkerShadow.src,
+              shadowSize: [41, 41],
+            })
+          }
+          position={markers.answer}
+        >
+          <Popup>Answer</Popup>
+        </Marker>
+      )}
     </>
   );
 };

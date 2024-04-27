@@ -68,8 +68,12 @@ export const serializeCoordinates = (
   const latDecimals = String(lat).split('.')[1]?.length || 0;
   const lonDecimals = String(lon).split('.')[1]?.length || 0;
 
-  const latFractional = parseInt(String(lat).split('.')[1] ?? '0');
-  const lonFractional = parseInt(String(lon).split('.')[1] ?? '0');
+  const latFractional = parseInt(
+    String(lat).split('.')[1]?.substring(0, 4) ?? '0'
+  );
+  const lonFractional = parseInt(
+    String(lon).split('.')[1]?.substring(0, 4) ?? '0'
+  );
 
   return {
     latitude: {

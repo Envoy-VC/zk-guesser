@@ -17,15 +17,19 @@ const GamePage = async ({ params }: Props) => {
     return <div>invalid game id</div>;
   }
 
-  const locations = await getLocationsForGameId(Number(gameId));
+  //const locations = await getLocationsForGameId(Number(gameId));
 
   return (
     <GameWrapper
       gameId={hexToBigInt(gameId)}
-      locations={locations.location_point ?? []}
-    >
-      <pre>{JSON.stringify(locations, null, 2)}</pre>
-    </GameWrapper>
+      locations={[
+        {
+          x: 13,
+          y: 12,
+        },
+      ]}
+      // locations={locations.location_point ?? []}
+    ></GameWrapper>
   );
 };
 

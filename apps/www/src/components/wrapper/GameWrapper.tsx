@@ -64,7 +64,13 @@ const GameWrapper = ({ children, gameId, locations }: Props) => {
     return <div>Not a player</div>;
   }
 
-  return <GuesserMap location={locations[currentRound]!} />;
+  return (
+    <GuesserMap
+      location={locations[currentRound]!}
+      startTime={startTime}
+      gameId={gameId}
+    />
+  );
 };
 
 export default GameWrapper;
