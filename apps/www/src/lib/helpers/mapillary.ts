@@ -1,5 +1,3 @@
-'use client';
-
 import { LocationPoint } from '~/types/server';
 
 export const getMapillaryImage = async (location: LocationPoint) => {
