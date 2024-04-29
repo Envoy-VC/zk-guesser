@@ -26,6 +26,38 @@ The game contracts are deployed and verified on Scroll Sepolia Blockchain. The c
 
 ---
 
+
+## Screenshots 📸
+
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+      <img src="https://github.com/Envoy-VC/zk-guesser/assets/65389981/4604aeab-2563-4907-999a-6fa2e02a2a09" alt="Homepage" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+      <img src="https://github.com/Envoy-VC/zk-guesser/assets/65389981/a9b0e9c3-0be5-4e0b-9ac5-e684f1647f38" alt="Game mode selection" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="https://github.com/Envoy-VC/zk-guesser/assets/65389981/6902b691-4dc3-484c-a250-1d31a772d72c" alt="Guesser Interface" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="https://github.com/Envoy-VC/zk-guesser/assets/65389981/fe468a28-3d81-4f31-91ea-d7dc2f021a09" alt="SCR-20231208-cyyh" alt="Result Page" >
+    </td>
+  </tr>
+</table>
+
+---
+
 ## How Proofs are generated?
 
 The Proofs are written in Noir DSL and compiled using the Noir compiler. The compiled proof is then used to verify the guess of the player. The proof is generated using the following steps:
@@ -72,6 +104,7 @@ Random locations around the globe or a region are done using geo spatial data. U
 - **Integration**: wagmi, viem, noir-js
 - **Smart Contracts**: Foundry, Solidity, Scroll Sepolia
 - **Circuits**: Noir DSL, Noir Compiler
+- **Map Components**: Mapillary, Leaflet
 
 ---
 
